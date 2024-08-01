@@ -141,6 +141,9 @@ class MainApp(CTk):
     
     def openAllCursorToplevel(self):
         self.allCrosshairToplevel = AllCursor(self)
+    
+    def test(self):
+        return
 
 class CustomAlertWindow1Button(CTkToplevel):
     def __init__(self, master, *args, **kwargs):
