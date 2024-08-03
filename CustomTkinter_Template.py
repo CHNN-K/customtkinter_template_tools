@@ -55,6 +55,7 @@ class MainApp(CTk):
         self.AnimatedWidget_UI()
         self.MousePositionToplevel_UI()
         self.AllCursorTopLevel_UI()
+        self.OrderFunctionToplevel_UI()
         
         # Function
         self.FixedUpdate()
@@ -136,14 +137,18 @@ class MainApp(CTk):
         self.mousePositionToplevel = MousePosition(self)
         
     def AllCursorTopLevel_UI(self):
-        self.btn_allCursorTopLevel = CTkButton(self.frame_main, text = "All Cursor", command = self.openAllCursorToplevel)
+        self.btn_allCursorTopLevel = CTkButton(self.frame_main, text = "All Cursor Toplevel", command = self.openAllCursorToplevel)
         self.btn_allCursorTopLevel.place(relx = 0.5, rely = 0.35, anchor = CENTER)
     
     def openAllCursorToplevel(self):
         self.allCrosshairToplevel = AllCursor(self)
     
-    def test(self):
-        return
+    def OrderFunctionToplevel_UI(self):
+        self.btn_orderFunctionTopLevel = CTkButton(self.frame_main, text = "Order Function Toplevel", command = self.openOrderFUnctionToplevel)
+        self.btn_orderFunctionTopLevel.place(relx = 0.5, rely = 0.4, anchor = CENTER)
+    
+    def openOrderFUnctionToplevel(self):
+        self.orderFunctionToplevel = OrderFuntion(self)
 
 class CustomAlertWindow1Button(CTkToplevel):
     def __init__(self, master, *args, **kwargs):
@@ -634,6 +639,145 @@ class AllCursor(CTkToplevel):
         event.widget.clipboard_clear()
         event.widget.master.clipboard_append(event.widget.master.cget("text"))
         print (f"Copy cursor to clipboard : {event.widget.master.cget("text")}")
+      
+class OrderFuntion(CTkToplevel):
+    def __init__(self, master, *args,**kwargs):
+        super().__init__(master, *args, **kwargs)
         
+        # Variable
+        self.orderFunction = []
+        self.orderFunctionName = []
+        
+        # Setting
+        self.attributes("-topmost", False)  # Always on top
+        
+        screen_width = 400
+        screen_height = 600
+        self.geometry(f"{screen_width}x{screen_height}+0+0")
+        
+        self.title("Order Function")
+        
+        self.resizable(False,False)
+        self.grab_set()
+        self.protocol("WM_DELETE_WINDOW", self.closeAndFocus)
+        
+        self.build_ui()
+        self.FixedUpdate()
+        
+        self.bringToTop()
+
+    def build_ui(self):
+        self.grid_rowconfigure(0, weight = 1)
+        self.grid_columnconfigure(0, weight = 1)
+        
+        self.frame_main = CTkFrame(self, fg_color = "transparent")
+        self.frame_main.grid(row = 0, column = 0)
+        
+        self.btn_clearOrder = CTkButton(self.frame_main, text = "Clear order", command = self.clearOrder)
+        self.btn_clearOrder.pack()
+        
+        self.checkbox_A = CTkCheckBox(self.frame_main, text = "Func A : print ('A')", command = self.checkbox_A_callback)
+        self.checkbox_A.pack()
+        
+        self.checkbox_B = CTkCheckBox(self.frame_main, text = "Func B : print ('B')", command = self.checkbox_B_callback)
+        self.checkbox_B.pack()
+        
+        self.checkbox_C = CTkCheckBox(self.frame_main, text = "Func C : print ('C')", command = self.checkbox_C_callback)
+        self.checkbox_C.pack()
+        
+        self.checkbox_D = CTkCheckBox(self.frame_main, text = "Func D : print ('D')", command = self.checkbox_D_callback)
+        self.checkbox_D.pack()
+        
+        self.label_order_title = CTkLabel(self.frame_main, text = "Function Order")
+        self.label_order_title.pack()
+        
+        self.label_order = CTkLabel(self.frame_main, text = "Function", fg_color = Color().gray, text_color = Color().white)
+        self.label_order.pack()
+        
+        self.label_total_order = CTkLabel(self.frame_main, text = "Total Function : 0")
+        self.label_total_order.pack()
+        
+        self.btn_execute = CTkButton(self.frame_main, text = "Execute in-order Function", command = self.executeOrderFunction)
+        self.btn_execute.pack()
+        
+    def FixedUpdate(self):
+        self.updateLabel()
+        self.after(1, self.FixedUpdate)
+    
+    def executeOrderFunction(self):
+        if len(self.orderFunction) > 0:
+            for func in self.orderFunction:
+                func()
+        else:
+            print(f"No Function in order")
+    
+    def clearOrder(self):
+        self.orderFunction.clear()
+        self.orderFunctionName.clear()
+        self.checkbox_A.deselect()
+        self.checkbox_B.deselect()
+        self.checkbox_C.deselect()
+        self.checkbox_D.deselect()
+    
+    def checkbox_A_callback(self):
+        if self.checkbox_A.get():
+            self.orderFunction.append(self.funcA)
+            self.orderFunctionName.append(self.funcA.__name__)
+        else:
+            self.orderFunction.remove(self.funcA)
+            self.orderFunctionName.remove(self.funcA.__name__)
+    
+    def checkbox_B_callback(self):
+        if self.checkbox_B.get():
+            self.orderFunction.append(self.funcB)
+            self.orderFunctionName.append(self.funcB.__name__)
+        else:
+            self.orderFunction.remove(self.funcB)
+            self.orderFunctionName.remove(self.funcB.__name__)
+    
+    def checkbox_C_callback(self):
+        if self.checkbox_C.get():
+            self.orderFunction.append(self.funcC)
+            self.orderFunctionName.append(self.funcC.__name__)
+        else:
+            self.orderFunction.remove(self.funcC)
+            self.orderFunctionName.remove(self.funcC.__name__)
+    
+    def checkbox_D_callback(self):
+        if self.checkbox_D.get():
+            self.orderFunction.append(self.funcD)
+            self.orderFunctionName.append(self.funcD.__name__)
+        else:
+            self.orderFunction.remove(self.funcD)
+            self.orderFunctionName.remove(self.funcD.__name__)
+    
+    def funcA(self):
+        print("A")
+    
+    def funcB(self):
+        print("B")
+    
+    def funcC(self):
+        print("C")
+    
+    def funcD(self):
+        print("D")
+    
+    def updateLabel(self):
+        if len(self.orderFunctionName) > 0:
+            self.label_order.configure(text = self.orderFunctionName)
+        else:
+            self.label_order.configure(text = "No Function in order")
+            
+        self.label_total_order.configure(text = f"Total Function : {len(self.orderFunction)}")
+    
+    def closeAndFocus(self):
+        self.master.focus_set()
+        self.destroy()
+    
+    def bringToTop(self):
+        self.after(100, lambda: self.attributes("-topmost", True))
+        self.after(200, lambda: self.attributes("-topmost", False))
+  
 app = MainApp()
 app.mainloop()
