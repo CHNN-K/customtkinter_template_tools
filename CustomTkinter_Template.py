@@ -2,7 +2,6 @@ from customtkinter import *
 
 class Color:
     def __init__(self):
-        self.main = "#1F6AA5"
         self.background = "#3A3A3A"
         self.background_frame = "#181717"
         self.white = "#F2F2F2"
@@ -12,6 +11,9 @@ class Color:
         self.black = "#0D0D0D"
         self.pink = "#F24171"
         self.gray = "#424242"
+        self.yellow = "#FFDE21"
+        self.darkblue = "#000080"
+        self.orange = "#FFA500"
         
         self.transparent = "transparent"
         self.disable = "#626262"
@@ -35,7 +37,7 @@ class MainApp(CTk):
         # Screen Setting
         screen_width = 300
         screen_height = 800
-        self.geometry(f"{screen_width}x{screen_height}+{self.winfo_screenwidth() - screen_width}+{self.winfo_screenheight() - screen_height}")
+        self.geometry(f"{screen_width}x{screen_height}+{self.winfo_screenwidth()//2 - screen_width//2}+{self.winfo_screenheight()//2 - screen_height//2}")
         self.resizable(False, False)
         
         set_appearance_mode("Dark")
@@ -43,7 +45,7 @@ class MainApp(CTk):
 
         self.title("Template")
         
-        self.bind("<Escape>", sys.exit)
+        self.bind("<Escape>", lambda event : self.destroy())
 
         # UI
         self.build_ui()
@@ -55,14 +57,15 @@ class MainApp(CTk):
         self.AnimatedWidget_UI()
         self.MousePositionToplevel_UI()
         self.AllCursorTopLevel_UI()
-        self.OrderFunctionToplevel_UI()
+        self.orderFunctionToplevel_UI()
+        self.processingTopLevel_UI()
         
         # Function
         self.FixedUpdate()
     
     def FixedUpdate(self):
         
-        self.after(50, self.FixedUpdate)
+        self.after(10, self.FixedUpdate)
 
     def build_ui(self):
         self.grid_columnconfigure(0, weight = 1)
@@ -105,19 +108,19 @@ class MainApp(CTk):
         self.btn_customTopLevel.place(relx = 0.5, rely = 0.2, anchor = CENTER)
         
     def openCustomTopLevel(self):
-        self.customTopLevel = CustomTopLevel(self)
+        self.customTopLevel = CustomTopLevel(self, self)
     # endregion
     
     # region Custom Widget
     def CustomWidget_UI(self):
         self.customWidget = CustomWidget(self.frame_main, self)
-        self.customWidget.place(relx = 0.5, rely = 0.5, anchor = CENTER)
+        self.customWidget.place(relx = 0.5, rely = 0.6, anchor = CENTER)
     # endregion
     
     # region Animated Widget
     def AnimatedWidget_UI(self):
         self.animatedWidget = AnimatedWidget(self.frame_main)
-        self.animatedWidget.place(relx = 0.5, rely = 0.6, anchor = CENTER)
+        self.animatedWidget.place(relx = 0.5, rely = 0.7, anchor = CENTER)
         self.animatedWidget.moveStep = 0.001
         
         self.btn_animatedWidget = CTkButton(self.frame_main, text = "Animate", 
@@ -130,25 +133,37 @@ class MainApp(CTk):
     # endregion
     
     def MousePositionToplevel_UI(self):
-        self.btn_mousePositionToplevel = CTkButton(self.frame_main, text = "Mouse Position Toplevel", command = self.openMousePositionToplevel)
+        self.btn_mousePositionToplevel = CTkButton(self.frame_main, text = "Mouse Position Toplevel",
+                                                   command = self.openMousePositionToplevel)
         self.btn_mousePositionToplevel.place(relx = 0.5, rely = 0.3, anchor = CENTER)
 
     def openMousePositionToplevel(self):
         self.mousePositionToplevel = MousePosition(self)
         
     def AllCursorTopLevel_UI(self):
-        self.btn_allCursorTopLevel = CTkButton(self.frame_main, text = "All Cursor Toplevel", command = self.openAllCursorToplevel)
+        self.btn_allCursorTopLevel = CTkButton(self.frame_main, text = "All Cursor Toplevel", 
+                                               command = self.openAllCursorToplevel)
         self.btn_allCursorTopLevel.place(relx = 0.5, rely = 0.35, anchor = CENTER)
     
     def openAllCursorToplevel(self):
         self.allCrosshairToplevel = AllCursor(self)
     
-    def OrderFunctionToplevel_UI(self):
-        self.btn_orderFunctionTopLevel = CTkButton(self.frame_main, text = "Order Function Toplevel", command = self.openOrderFUnctionToplevel)
+    def orderFunctionToplevel_UI(self):
+        self.btn_orderFunctionTopLevel = CTkButton(self.frame_main, text = "Order Function Toplevel", 
+                                                   command = self.openOrderFUnctionToplevel)
         self.btn_orderFunctionTopLevel.place(relx = 0.5, rely = 0.4, anchor = CENTER)
     
     def openOrderFUnctionToplevel(self):
         self.orderFunctionToplevel = OrderFuntion(self)
+        
+    def processingTopLevel_UI(self):
+        self.btn_processingTopLevel = CTkButton(self.frame_main, text = "Processing Toplevel", 
+                                                   command = self.openProcessingToplevel)
+        self.btn_processingTopLevel.place(relx = 0.5, rely = 0.45, anchor = CENTER)
+    
+    def openProcessingToplevel(self):
+        self.toplevel_processing = Toplevel_Process_Status(self, 3)
+        self.toplevel_processing.processFinish_callback()
 
 class CustomAlertWindow1Button(CTkToplevel):
     def __init__(self, master, *args, **kwargs):
@@ -161,13 +176,13 @@ class CustomAlertWindow1Button(CTkToplevel):
         
         screen_width = 400
         screen_height = 200
-        self.geometry(f"{screen_width}x{screen_height}+{int(self.winfo_screenwidth()/2 + self.winfo_width())}+{int(self.winfo_screenheight()/2 + self.winfo_height())}")
+        self.geometry(f"{screen_width}x{screen_height}+{self.winfo_screenwidth()//2 - screen_width//2}+{self.winfo_screenheight()//2 - screen_height//2}")
         
         self.title("Custom alert window")
         
         self.resizable(False,False)
         self.grab_set()
-        self.protocol("WM_DELETE_WINDOW", self.closeAndFocus)
+        self.protocol("WM_DELETE_WINDOW", self.destroy)
         
         self.build_ui()
         self.bringToTop()
@@ -176,12 +191,12 @@ class CustomAlertWindow1Button(CTkToplevel):
         self.grid_rowconfigure(0, weight = 1)
         self.grid_columnconfigure(0, weight = 1)
         
-        self.frame_main = CTkFrame(self, fg_color = "transparent")
+        self.frame_main = CTkFrame(self, fg_color = Color().transparent)
         self.frame_main.grid_rowconfigure((0,1), weight = 1)
         self.frame_main.grid_columnconfigure(0, weight = 1)
         self.frame_main.grid(row = 0, column = 0)
 
-        self.frame_text = CTkFrame(self.frame_main, fg_color = "transparent")
+        self.frame_text = CTkFrame(self.frame_main, fg_color = Color().transparent)
         self.frame_text.grid_rowconfigure((0,1), weight = 1)
         self.frame_text.grid_columnconfigure(0, weight = 1)
         self.frame_text.grid(row = 0, column = 0, sticky = EW)
@@ -196,7 +211,7 @@ class CustomAlertWindow1Button(CTkToplevel):
                               text_color = Color().white)
         self.line2.grid(row = 1, column = 0)
 
-        self.frame_btn = CTkFrame(self.frame_main, fg_color = "transparent")
+        self.frame_btn = CTkFrame(self.frame_main, fg_color = Color().transparent)
         self.frame_btn.grid_rowconfigure(0, weight = 1)
         self.frame_btn.grid_columnconfigure(0, weight = 1)
         self.frame_btn.grid(row = 1, column = 0, pady = 20, sticky = EW)
@@ -209,16 +224,11 @@ class CustomAlertWindow1Button(CTkToplevel):
         self.btn1.grid(row = 0, column = 0)
 
     def btn1Function(self):
-        self.closeAndFocus()
-        
-    def closeAndFocus(self):
-        self.master.focus_set()
-        self.master.grab_set()
-        self.destroy()
+        pass
     
     def bringToTop(self):
         self.after(100, lambda: self.attributes("-topmost", True))
-        self.after(200, lambda: self.attributes("-topmost", False))
+        self.after(500, lambda: self.attributes("-topmost", False))
 
 class CustomAlertWindow2Button(CTkToplevel):
     def __init__(self, *args, **kwargs):
@@ -231,13 +241,13 @@ class CustomAlertWindow2Button(CTkToplevel):
         
         screen_width = 400
         screen_height = 200
-        self.geometry(f"{screen_width}x{screen_height}+{int(self.winfo_screenwidth()/2 + self.winfo_width())}+{int(self.winfo_screenheight()/2 + self.winfo_height())}")
+        self.geometry(f"{screen_width}x{screen_height}+{self.winfo_screenwidth()//2 - screen_width//2}+{self.winfo_screenheight()//2 - screen_height//2}")
         
         self.title("Custom alert window")
         
         self.resizable(False,False)
         self.grab_set()
-        self.protocol("WM_DELETE_WINDOW", self.closeAndFocus)
+        self.protocol("WM_DELETE_WINDOW", self.destroy)
         
         self.build_ui()
         self.bringToTop()
@@ -246,12 +256,12 @@ class CustomAlertWindow2Button(CTkToplevel):
         self.grid_rowconfigure(0, weight = 1)
         self.grid_columnconfigure(0, weight = 1)
 
-        self.frame_main = CTkFrame(self, fg_color = "transparent")
+        self.frame_main = CTkFrame(self, fg_color = Color().transparent)
         self.frame_main.grid_rowconfigure((0,1), weight = 1)
         self.frame_main.grid_columnconfigure(0, weight = 1)
         self.frame_main.grid(row = 0, column = 0)
 
-        self.frame_text = CTkFrame(self.frame_main, fg_color = "transparent")
+        self.frame_text = CTkFrame(self.frame_main, fg_color = Color().transparent)
         self.frame_text.grid_rowconfigure((0,1), weight = 1)
         self.frame_text.grid_columnconfigure(0, weight = 1)
         self.frame_text.grid(row = 0, column = 0, sticky = EW)
@@ -266,7 +276,7 @@ class CustomAlertWindow2Button(CTkToplevel):
                               text_color = Color().white)
         self.line2.grid(row = 1, column = 0)
 
-        self.frame_btn = CTkFrame(self.frame_main, fg_color = "transparent")
+        self.frame_btn = CTkFrame(self.frame_main, fg_color = Color().transparent)
         self.frame_btn.grid_rowconfigure(0, weight = 1)
         self.frame_btn.grid_columnconfigure((1), weight = 0, minsize = 20)
         self.frame_btn.grid_columnconfigure((0,2), weight = 1)
@@ -287,37 +297,34 @@ class CustomAlertWindow2Button(CTkToplevel):
         self.btn2.grid(row = 0, column = 2, sticky = E)
 
     def btn1Function(self):
-        return
+        pass
 
     def btn2Function(self):
-        self.closeAndFocus()
-    
-    def closeAndFocus(self):
-        self.master.focus_set()
-        self.destroy()
+        pass
         
     def bringToTop(self):
         self.after(100, lambda: self.attributes("-topmost", True))
-        self.after(200, lambda: self.attributes("-topmost", False))
+        self.after(500, lambda: self.attributes("-topmost", False))
 
 class CustomTopLevel(CTkToplevel):
-    def __init__(self, master, *args,**kwargs):
+    def __init__(self, master, mainApp, *args,**kwargs):
         super().__init__(master, *args, **kwargs)
         
         # Variable
+        self.mainApp = mainApp
         
         # Setting
         self.attributes("-topmost", False)  # Always on top
         
         screen_width = 400
         screen_height = 600
-        self.geometry(f"{screen_width}x{screen_height}+0+0")
+        self.geometry(f"{screen_width}x{screen_height}+{self.winfo_screenwidth()//2 - screen_width//2}+{self.winfo_screenheight()//2 - screen_height//2}")
         
         self.title("Toplevel")
         
         self.resizable(False,False)
         self.grab_set()
-        self.protocol("WM_DELETE_WINDOW", self.closeAndFocus)
+        self.protocol("WM_DELETE_WINDOW", self.window_exit_btn_callback)
         
         self.build_ui()
         self.bringToTop()
@@ -326,18 +333,18 @@ class CustomTopLevel(CTkToplevel):
         self.grid_rowconfigure(0, weight = 1)
         self.grid_columnconfigure(0, weight = 1)
         
-        self.frame_main = CTkFrame(self, fg_color = "transparent")
+        self.frame_main = CTkFrame(self, fg_color = Color().transparent)
         self.frame_main.grid_rowconfigure((0,1), weight = 1)
         self.frame_main.grid_columnconfigure(0, weight = 1)
         self.frame_main.grid(row = 0, column = 0)
     
-    def closeAndFocus(self):
-        self.master.focus_set()
-        self.destroy()
-    
     def bringToTop(self):
         self.after(100, lambda: self.attributes("-topmost", True))
-        self.after(200, lambda: self.attributes("-topmost", False))
+        self.after(500, lambda: self.attributes("-topmost", False))
+    
+    def window_exit_btn_callback(self):
+        print("Destroy Window")
+        self.destroy()
 
 class CustomWidget(CTkFrame):
     def __init__(self, master, mainApp, *args, **kwargs):
@@ -362,7 +369,7 @@ class CustomWidget(CTkFrame):
         self.grid_columnconfigure(0, weight = 1)
         self.grid_rowconfigure(0, weight = 1)
         
-        self.frame_main = CTkFrame(self, fg_color = "transparent")
+        self.frame_main = CTkFrame(self, fg_color = Color().transparent)
         self.frame_main.grid_rowconfigure((0,1,2), weight = 0)
         self.frame_main.grid_columnconfigure(0, weight = 1)
         self.frame_main.grid(row = 0, column = 0, sticky = NSEW)
@@ -396,7 +403,7 @@ class AnimatedWidget(CTkFrame):
         self.grid_columnconfigure(0, weight = 1)
         self.grid_rowconfigure(0, weight = 1)
         
-        self.frame_main = CTkFrame(self, fg_color = "transparent")
+        self.frame_main = CTkFrame(self, fg_color = Color().transparent)
         self.frame_main.grid_rowconfigure((0,1), weight = 0)
         self.frame_main.grid_columnconfigure(0, weight = 1)
         self.frame_main.grid(row = 0, column = 0, sticky = NSEW)
@@ -482,13 +489,13 @@ class MousePosition(CTkToplevel):
         
         screen_width = 400
         screen_height = 600
-        self.geometry(f"{screen_width}x{screen_height}+0+0")
+        self.geometry(f"{screen_width}x{screen_height}+{self.winfo_screenwidth()//2 - screen_width//2}+{self.winfo_screenheight()//2 - screen_height//2}")
         
         self.title("Toplevel")
         
         self.resizable(False,False)
         self.grab_set()
-        self.protocol("WM_DELETE_WINDOW", self.closeAndFocus)
+        self.protocol("WM_DELETE_WINDOW", self.destroy)
         
         # deactivate_automatic_dpi_awareness()
         
@@ -501,7 +508,7 @@ class MousePosition(CTkToplevel):
         self.grid_rowconfigure(0, weight = 1)
         self.grid_columnconfigure(0, weight = 1)
         
-        self.frame_main = CTkFrame(self, fg_color = "transparent")
+        self.frame_main = CTkFrame(self, fg_color = Color().transparent)
         self.frame_main.grid_rowconfigure((0,1), weight = 1)
         self.frame_main.grid_columnconfigure(0, weight = 1)
         self.frame_main.grid(row = 0, column = 0)
@@ -509,21 +516,17 @@ class MousePosition(CTkToplevel):
         self.mousePosition = CTkLabel(self, text = "X:0, Y:0")
         self.mousePosition.place(relx = 1, rely = 1, anchor = SE)
         
-        self.dragableBox = CTkLabel(self, text = "Drag", 
-                                    height = 10, width = 10, 
+        self.dragableBox = CTkLabel(self, text = "Drag Me", 
+                                    height = 20, width = 20, 
                                     fg_color = Color().red,
                                     cursor = "fleur")
-        self.dragableBox.place(x = 0, y = 0, anchor = CENTER)
+        self.dragableBox.place(x = self.winfo_width()/2, y = self.winfo_height()/2, anchor = CENTER)
         self.dragableBox.bind("<ButtonPress-1>", self.onMouseClick)
         self.dragableBox.bind('<ButtonRelease-1>', self.onMouseRelease)
     
-    def closeAndFocus(self):
-        self.master.focus_set()
-        self.destroy()
-    
     def bringToTop(self):
         self.after(100, lambda: self.attributes("-topmost", True))
-        self.after(200, lambda: self.attributes("-topmost", False))
+        self.after(500, lambda: self.attributes("-topmost", False))
         
     def mousePositionCallback(self, event):
         # Get the absolute mouse position on the screen
@@ -589,7 +592,7 @@ class AllCursor(CTkToplevel):
         
         screen_width = 800
         screen_height = 800
-        self.geometry(f"{screen_width}x{screen_height}+0+0")
+        self.geometry(f"{screen_width}x{screen_height}+{self.winfo_screenwidth()//2 - screen_width//2}+{self.winfo_screenheight()//2 - screen_height//2}")
         
         self.title("All Cursor")
         
@@ -604,7 +607,7 @@ class AllCursor(CTkToplevel):
         self.grid_rowconfigure(0, weight = 1)
         self.grid_columnconfigure(0, weight = 1)
         
-        self.frame_main = CTkFrame(self, fg_color = "transparent")
+        self.frame_main = CTkFrame(self, fg_color = Color().transparent)
         self.frame_main.grid_rowconfigure(0, weight = 0)
         self.frame_main.grid_columnconfigure(0, weight = 0)
         self.frame_main.grid(row = 0, column = 0)
@@ -653,7 +656,7 @@ class OrderFuntion(CTkToplevel):
         
         screen_width = 400
         screen_height = 600
-        self.geometry(f"{screen_width}x{screen_height}+0+0")
+        self.geometry(f"{screen_width}x{screen_height}+{self.winfo_screenwidth()//2 - screen_width//2}+{self.winfo_screenheight()//2 - screen_height//2}")
         
         self.title("Order Function")
         
@@ -670,7 +673,7 @@ class OrderFuntion(CTkToplevel):
         self.grid_rowconfigure(0, weight = 1)
         self.grid_columnconfigure(0, weight = 1)
         
-        self.frame_main = CTkFrame(self, fg_color = "transparent")
+        self.frame_main = CTkFrame(self, fg_color = Color().transparent)
         self.frame_main.grid(row = 0, column = 0)
         
         self.btn_clearOrder = CTkButton(self.frame_main, text = "Clear order", command = self.clearOrder)
@@ -778,6 +781,97 @@ class OrderFuntion(CTkToplevel):
     def bringToTop(self):
         self.after(100, lambda: self.attributes("-topmost", True))
         self.after(200, lambda: self.attributes("-topmost", False))
+
+class Toplevel_Process_Status(CTkToplevel):
+    def __init__(self, master, aliveTime : int, *args, **kwargs):
+        super().__init__(master, *args, **kwargs)
+        
+        # Variable
+        self.autoCloseTime = aliveTime  # Second
+        
+        # Setting
+        self.attributes("-topmost", True)  # Always on top
+        
+        screen_width = 400
+        screen_height = 250
+        self.geometry(f"{screen_width}x{screen_height}+{960-int(screen_width/2)}+{540-int(screen_height/2)}")
+        
+        self.title("Process Status")
+        
+        self.resizable(False,False)
+        self.grab_set()
+        self.protocol("WM_DELETE_WINDOW", self.closeAndFocus)
+        
+        """ Main """
+        self.build_ui()
+        self.animateProcessText()
+
+    def build_ui(self):
+        self.grid_rowconfigure(0, weight = 1)
+        self.grid_columnconfigure(0, weight = 1)
+        self.configure(fg_color = Color().yellow)
+        
+        self.frame_main = CTkFrame(self, fg_color = Color().transparent)
+        self.frame_main.grid_rowconfigure((0,1), weight = 1)
+        self.frame_main.grid_columnconfigure(0, weight = 1)
+        self.frame_main.grid(row = 0, column = 0)
+
+        self.frame_text = CTkFrame(self.frame_main, fg_color = Color().transparent)
+        self.frame_text.grid_rowconfigure((0,1), weight = 0)
+        self.frame_text.grid_columnconfigure(0, weight = 1)
+        self.frame_text.grid(row = 0, column = 0)
+
+        self.label_status = CTkLabel(self.frame_text, text = "Processing...", 
+                              font = (Font().font_bold, 36),
+                              text_color = Color().black)
+        self.label_status.grid(row = 0, column = 0)
+        
+        self.label_timer = CTkLabel(self.frame_text, text = "Close in 3...", 
+                              font = (Font().font, 16),
+                              text_color = Color().yellow)
+        self.label_timer.grid(row = 1, column = 0)
+        self.label_timer.grid_remove()
+
+    def closeAndFocus(self):
+        self.grab_release()
+        self.destroy()
+    
+    def bringToTop(self):
+        self.after(100, lambda: self.attributes("-topmost", True))
+        self.after(400, lambda: self.attributes("-topmost", False))
+    
+    def processFinish_callback(self):
+        self.after_cancel(self.process_animation_text)
+        
+        self.configure(fg_color = Color().green)
+        self.label_status.configure(text = "Finish", text_color = Color().white)
+        self.label_timer.grid()
+        self.autoCloseWindow(self.autoCloseTime)
+        
+    def animateProcessText(self):
+        if self.label_status.cget("text") == "Processing":
+            self.label_status.configure(text = "Processing.")
+        elif self.label_status.cget("text") == "Processing.":
+            self.label_status.configure(text = "Processing..")
+        elif self.label_status.cget("text") == "Processing..":
+            self.label_status.configure(text = "Processing...")
+        elif self.label_status.cget("text") == "Processing...":
+            self.label_status.configure(text = "Processing")
+        self.process_animation_text = self.after(500, self.animateProcessText)
+    
+    def autoCloseWindow(self, aliveTime):
+        if (aliveTime == -1):
+            self.label_timer.grid_remove()
+            return
+        
+        if (self.autoCloseTime <= 0):
+            self.closeAndFocus()
+            return
+        
+        self.label_timer.configure(text = f"Close in {self.autoCloseTime}...")
+        self.autoCloseTime -= 1
+        self.after(1000, lambda : self.autoCloseWindow(aliveTime))
+
   
 app = MainApp()
 app.mainloop()
