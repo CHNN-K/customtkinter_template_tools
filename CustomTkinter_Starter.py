@@ -1,27 +1,5 @@
 from customtkinter import *
-
-class Font:
-    def __init__(self):
-        self.font = "Franklin Gothic Medium"
-        self.font_bold = "Franklin Gothic Heavy"
-
-class Color:
-    def __init__(self):
-        self.background = "#2A2A2A"
-        self.background_frame = "#181717"
-        self.white = "#F2F2F2"
-        self.red = "#C00000"
-        self.green = "#00B050"
-        self.blue = "#0078D4"
-        self.black = "#0D0D0D"
-        self.pink = "#F24171"
-        self.gray = "#424242"
-        self.yellow = "#FFDE21"
-        self.darkblue = "#000080"
-        self.orange = "#FFA500"
-        
-        self.transparent = "transparent"
-        self.disable = "#626262"
+from lib.utils.ui import Color, Font
 
 class MainApp(CTk):
     def __init__(self):
